@@ -1,0 +1,5 @@
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  Bullet.cpp
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\Bullet.cpp(31,32): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\Bullet.cpp(32,32): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+  Game.vcxproj -> D:\Facultate\Anul 2\Sem2\CG\GameFramework\d_Game.exe

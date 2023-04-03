@@ -61,7 +61,6 @@ Sprite::~Sprite()
 void Sprite::update(float dt)
 {
 	// Update the sprites position.
-
 	mPosition += mVelocity * dt;
 	// Update bounding rectangle/circle
 }
@@ -195,8 +194,8 @@ void AnimatedSprite::SetFrame(int iIndex)
 	// index must be in range
 	assert(iIndex >= 0 && iIndex < miFrameCount && "AnimatedSprite frame Index must be in range!");
 
-	mptFrameCrop.x = mptFrameStartCrop.x + iIndex*miFrameWidth;
-	mptFrameCrop.y = mptFrameStartCrop.y + iIndex*miFrameHeight;
+	mptFrameCrop.x = mptFrameStartCrop.x + iIndex%4*miFrameWidth;
+	mptFrameCrop.y = mptFrameStartCrop.y + iIndex/4*miFrameHeight;
 }
 
 void AnimatedSprite::draw()

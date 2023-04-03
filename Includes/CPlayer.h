@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 #include "Main.h"
 #include "Sprite.h"
-
+#include "Bullet.h"
 //-----------------------------------------------------------------------------
 // Main Class Definitions
 //-----------------------------------------------------------------------------
@@ -57,7 +57,8 @@ public:
 	void					Move(ULONG ulDirection);
 	Vec2&					Position();
 	Vec2&					Velocity();
-
+	
+	void					Shoot(Bullet* bullet);
 	void					Explode();
 	bool					AdvanceExplosion();
 

@@ -11,7 +11,6 @@
 // CPlayer Specific Includes
 //-----------------------------------------------------------------------------
 #include "CPlayer.h"
-
 //-----------------------------------------------------------------------------
 // Name : CPlayer () (Constructor)
 // Desc : CPlayer Class Constructor
@@ -31,7 +30,7 @@ CPlayer::CPlayer(const BackBuffer *pBackBuffer)
 	r.right = 128;
 	r.bottom = 128;
 
-	m_pExplosionSprite	= new AnimatedSprite("data/explosion.bmp", "data/explosionmask.bmp", r, 4);
+	m_pExplosionSprite	= new AnimatedSprite("data/explosion.bmp", "data/explosionmask.bmp", r, 16);
 	m_pExplosionSprite->setBackBuffer( pBackBuffer );
 	m_bExplosion		= false;
 	m_iExplosionFrame	= 0;
@@ -107,17 +106,33 @@ void CPlayer::Draw()
 
 void CPlayer::Move(ULONG ulDirection)
 {
-	if( ulDirection & CPlayer::DIR_LEFT )
+	if (ulDirection & CPlayer::DIR_LEFT)
 		m_pSprite->mVelocity.x -= .1;
-
+	if (m_pSprite->mPosition.x - m_pSprite->width() / 2 < 0) {
+		m_pSprite->mVelocity.x = 0;
+		m_pSprite->mPosition.x += 1;
+	}
+	
 	if( ulDirection & CPlayer::DIR_RIGHT )
 		m_pSprite->mVelocity.x += .1;
-
+	if (m_pSprite->mPosition.x + m_pSprite->width() / 2 > 780) {
+		m_pSprite->mVelocity.x = 0;
+		m_pSprite->mPosition.x -= 1;
+	}
+	
 	if( ulDirection & CPlayer::DIR_FORWARD )
 		m_pSprite->mVelocity.y -= .1;
-
-	if( ulDirection & CPlayer::DIR_BACKWARD )
+	if (m_pSprite->mPosition.y - m_pSprite->height() / 2 < 0) {
+		m_pSprite->mVelocity.y = 0;
+		m_pSprite->mPosition.y += 1;
+	}
+	
+	if( ulDirection & CPlayer::DIR_BACKWARD )	
 		m_pSprite->mVelocity.y += .1;
+	if (m_pSprite->mPosition.y + m_pSprite->height() / 2 > 560) {
+		m_pSprite->mVelocity.y = 0;
+		m_pSprite->mPosition.y -= 1;
+	}
 }
 
 
@@ -129,6 +144,14 @@ Vec2& CPlayer::Position()
 Vec2& CPlayer::Velocity()
 {
 	return m_pSprite->mVelocity;
+}
+
+void CPlayer::Shoot(Bullet* bullet) {
+	Vec2 playerDir;
+	playerDir.x = 0.0;
+	playerDir.y = -m_pSprite->height() / 2;
+
+	bullet->AddBullet(m_pSprite->mPosition + playerDir);
 }
 
 void CPlayer::Explode()
