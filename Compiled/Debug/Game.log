@@ -1,0 +1,11 @@
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  CGameApp.cpp
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(497,27): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(498,28): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(499,26): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(500,29): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(503,28): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(504,29): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(505,27): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+D:\Facultate\Anul 2\Sem2\CG\GameFramework\Source\CGameApp.cpp(506,30): warning C4244: '=': conversion from 'double' to 'LONG', possible loss of data
+  Game.vcxproj -> D:\Facultate\Anul 2\Sem2\CG\GameFramework\d_Game.exe
