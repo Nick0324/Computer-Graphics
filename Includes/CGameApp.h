@@ -18,6 +18,7 @@
 #include "BackBuffer.h"
 #include "ImageFile.h"
 #include "Bullet.h"
+#include "Crate.h"
 #include <fstream>
 #include <iostream>
 //-----------------------------------------------------------------------------
@@ -40,7 +41,6 @@ public:
 	//-------------------------------------------------------------------------
 			 CGameApp();
 	virtual ~CGameApp();
-
 	//-------------------------------------------------------------------------
 	// Public Functions for This Class
 	//-------------------------------------------------------------------------
@@ -48,7 +48,7 @@ public:
 	bool		InitInstance( LPCTSTR lpCmdLine, int iCmdShow );
 	int		 BeginGame( );
 	bool		ShutDown( );
-	
+
 private:
 	//-------------------------------------------------------------------------
 	// Private Functions for This Class
@@ -65,6 +65,7 @@ private:
 	void		Save();
 	void		Load();
 	bool		Collide(Sprite* p1, Sprite* p2);
+	bool		CollideBullet(Sprite* p1);
 	//-------------------------------------------------------------------------
 	// Private Static Functions For This Class
 	//-------------------------------------------------------------------------
@@ -96,6 +97,7 @@ private:
 	CPlayer*				m_pPlayer;
 	CPlayer*				m_pPlayer1;
 	Bullet*					m_pBullet;
+	Crate*					m_pCrate;
 };
 
 #endif // _CGAMEAPP_H_

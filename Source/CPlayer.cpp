@@ -22,7 +22,8 @@ CPlayer::CPlayer(const BackBuffer *pBackBuffer)
 	m_pSprite->setBackBuffer( pBackBuffer );
 	m_eSpeedState = SPEED_STOP;
 	m_fTimer = 0;
-
+	lives = 3;
+	score = 0;
 	// Animation frame crop rectangle
 	RECT r;
 	r.left = 0;
@@ -150,16 +151,37 @@ Vec2& CPlayer::Velocity()
 	return m_pSprite->mVelocity;
 }
 
-void CPlayer::Shoot(Bullet* bullet) {
+void CPlayer::Shoot(Bullet* bullet, CPlayer::DIRECTION direction) {
 	Vec2 playerDir;
-	playerDir.x = 0.0;
-	playerDir.y = -m_pSprite->height() / 2;
-
-	bullet->AddBullet(m_pSprite->mPosition + playerDir);
+	int dir = 0;
+	switch (direction) {
+	case DIR_FORWARD:
+		playerDir.x = 0;
+		playerDir.y = -m_pSprite->height() / 2;
+		dir = 0;
+		break;
+	case DIR_BACKWARD:
+		playerDir.x = 0;
+		playerDir.y = m_pSprite->height() / 2;
+		dir = 1;
+		break;
+	case DIR_LEFT:
+		playerDir.x = -m_pSprite->width() / 2;
+		playerDir.y = 0;
+		dir = 2;
+		break;
+	case DIR_RIGHT:
+		playerDir.x = m_pSprite->width() / 2;
+		playerDir.y = 0;
+		dir = 3;
+		break;
+	}
+	bullet->AddBullet(m_pSprite->mPosition + playerDir, dir);
 }
 
 void CPlayer::Explode()
 {
+	lives--;
 	m_pExplosionSprite->mPosition = m_pSprite->mPosition;
 	m_pExplosionSprite->SetFrame(0);
 	//PlaySound("data/explosion.wav", NULL, SND_FILENAME | SND_ASYNC);
@@ -195,15 +217,19 @@ void CPlayer::Rotate(DIRECTION direction) {
 	{
 	case DIRECTION::DIR_FORWARD:
 		m_pSprite = new Sprite("data/planeimgandmask.bmp", RGB(0xff, 0x00, 0xff));
+		curentDirection = DIR_FORWARD;
 		break;
 	case DIRECTION::DIR_BACKWARD:
 		m_pSprite = new Sprite("data/planeimgandmaskdown.bmp", RGB(0xff, 0x00, 0xff));
+		curentDirection = DIR_BACKWARD;
 		break;
 	case DIRECTION::DIR_LEFT:
 		m_pSprite = new Sprite("data/planeimgandmaskleft.bmp", RGB(0xff, 0x00, 0xff));
+		curentDirection = DIR_LEFT;
 		break;
 	case DIRECTION::DIR_RIGHT:
 		m_pSprite = new Sprite("data/planeimgandmaskright.bmp", RGB(0xff, 0x00, 0xff));
+		curentDirection = DIR_RIGHT;
 		break;
 	}
 	m_pSprite->mPosition = position;

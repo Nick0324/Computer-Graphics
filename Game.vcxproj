@@ -161,6 +161,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Source\Crate.cpp" />
     <ClCompile Include="Source\CTimer.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -179,6 +180,7 @@
     <ClInclude Include="Includes\Bullet.h" />
     <ClInclude Include="Includes\CGameApp.h" />
     <ClInclude Include="Includes\CPlayer.h" />
+    <ClInclude Include="Includes\Crate.h" />
     <ClInclude Include="Includes\CTimer.h" />
     <ClInclude Include="Includes\Filters.h" />
     <ClInclude Include="Includes\ImageFile.h" />

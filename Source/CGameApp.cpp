@@ -30,6 +30,7 @@ CGameApp::CGameApp()
 	m_pPlayer		= NULL;
 	m_pPlayer1		= NULL;
 	m_pBullet		= NULL;
+	m_pCrate		= NULL;
 	m_LastFrameRate = 0;
 }
 
@@ -261,7 +262,7 @@ LRESULT CGameApp::DisplayWndProc( HWND hWnd, UINT Message, WPARAM wParam, LPARAM
 				break;
 			case 'Z':
 				fTimer = SetTimer(m_hWnd, 3, 100, NULL);
-				m_pPlayer->Shoot(m_pBullet);
+				m_pPlayer->Shoot(m_pBullet, m_pPlayer->curentDirection);
 				break;
 			case VK_F5:
 				Save();
@@ -318,6 +319,7 @@ bool CGameApp::BuildObjects()
 	m_pPlayer = new CPlayer(m_pBBuffer);
 	m_pPlayer1 = new CPlayer(m_pBBuffer);
 	m_pBullet = new Bullet(m_pBBuffer);
+	m_pCrate = new Crate(m_pBBuffer);
 
 	if(!m_imgBackground.LoadBitmapFromFile("data/background.bmp", GetDC(m_hWnd)))
 		return false;
@@ -333,7 +335,8 @@ bool CGameApp::BuildObjects()
 void CGameApp::SetupGameState()
 {
 	m_pPlayer->Position() = Vec2(100, 400);
-	m_pPlayer1->Position() = Vec2(300, 400);
+	m_pPlayer1->Position() = Vec2(300, 100);
+	m_pCrate->AddCrate(*m_pCrate);
 }
 
 //-----------------------------------------------------------------------------
@@ -359,6 +362,11 @@ void CGameApp::ReleaseObjects( )
 	{
 		delete m_pBullet;
 		m_pBullet = NULL;
+	}
+	if (m_pCrate != NULL)
+	{
+		delete m_pCrate;
+		m_pCrate = NULL;
 	}
 
 	if(m_pBBuffer != NULL)
@@ -387,7 +395,7 @@ void CGameApp::FrameAdvance()
 	if ( m_LastFrameRate != m_Timer.GetFrameRate() )
 	{
 		m_LastFrameRate = m_Timer.GetFrameRate( FrameRate, 50 );
-		sprintf_s( TitleBuffer, _T("Game : %s"), FrameRate );
+		sprintf_s( TitleBuffer, _T("Game : %s | Lives : %d | Score : %d "), FrameRate, m_pPlayer->lives, m_pPlayer->score);
 		SetWindowText( m_hWnd, TitleBuffer );
 
 	} // End if Frame Rate Altered
@@ -449,6 +457,7 @@ void CGameApp::AnimateObjects()
 {
 	m_pPlayer->Update(m_Timer.GetTimeElapsed());
 	m_pBullet->Update(m_Timer.GetTimeElapsed());
+	m_pCrate->Update(m_Timer.GetTimeElapsed());
 }
 //-----------------------------------------------------------------------------
 // Name : DrawObjects () (Private)
@@ -466,13 +475,36 @@ void CGameApp::DrawObjects()
 	m_pPlayer1->Draw();
 
 	m_pBullet->Draw();
+	m_pCrate->Draw();
 
 	m_pBBuffer->present();
+	if (m_pCrate->crateList.size() < 5) {
+		m_pCrate->AddCrate(*(new Crate(m_pBBuffer)));
+	}
 
 	if (Collide(m_pPlayer1->m_pSprite, m_pPlayer->m_pSprite)) {
 		fTimer = SetTimer(m_hWnd, 1, 70, NULL);
 		m_pPlayer->Explode();
+		m_pPlayer->Position() = Vec2(100, 400);
+		m_pPlayer->Velocity() = Vec2(0, 0);
 		m_pPlayer1->Explode();
+	}
+	for (int i = 0; i < m_pCrate->crateList.size(); i++) {
+		if (m_pCrate->crateList.at(i).m_pSprite->mPosition.y >= 600) {
+			m_pCrate->crateList.erase(m_pCrate->crateList.begin() + i);
+		}
+		if (CollideBullet(m_pCrate->crateList.at(i).m_pSprite)) {
+			fTimer = SetTimer(m_hWnd, 1, 70, NULL);
+			m_pCrate->crateList.erase(m_pCrate->crateList.begin() + i);
+			m_pPlayer->score += 100;
+		}
+		else if (Collide(m_pCrate->crateList.at(i).m_pSprite, m_pPlayer->m_pSprite)) {
+			fTimer = SetTimer(m_hWnd, 1, 70, NULL);
+			m_pPlayer->Explode();
+			m_pPlayer->Position() = Vec2(100, 400);
+			m_pPlayer->Velocity() = Vec2(0, 0);
+			m_pCrate->crateList.erase(m_pCrate->crateList.begin() + i);
+		}
 	}
 }
 
@@ -513,5 +545,27 @@ bool CGameApp::Collide(Sprite* p1, Sprite* p2) {
 		return true;
 	}
 
+	return false;
+}
+bool CGameApp::CollideBullet(Sprite* p1) {
+	RECT r;
+	r.left = p1->mPosition.x - p1->width() / 2;
+	r.right = p1->mPosition.x + p1->width() / 2;
+	r.top = p1->mPosition.y - p1->height() / 2;
+	r.bottom = p1->mPosition.y + p1->height() / 2;
+
+	for (int i = 0; i < m_pBullet->m_lpBulletPosList.size(); i++) {
+		int x = m_pBullet->m_lpBulletPosList.at(i).x;
+		int y = m_pBullet->m_lpBulletPosList.at(i).y;
+
+		if (r.right > x - 6 && r.left < x + 6 && r.bottom>y - 6 && r.top < y + 6) {
+			return true;
+			m_pBullet->m_lpBulletPosList.erase(m_pBullet->m_lpBulletPosList.begin() + i);
+		}
+		if (r.left > x + 6 && r.right < x - 6 && r.bottom>y - 6 && r.top < y + 6) {
+			return true;
+			m_pBullet->m_lpBulletPosList.erase(m_pBullet->m_lpBulletPosList.begin() + i);
+		}
+	}
 	return false;
 }

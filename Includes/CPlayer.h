@@ -51,6 +51,9 @@ public:
 
 
 	Sprite* m_pSprite;
+	int lives;
+	int score;
+	DIRECTION curentDirection;
 	//-------------------------------------------------------------------------
 	// Public Functions for This Class.
 	//-------------------------------------------------------------------------
@@ -60,7 +63,7 @@ public:
 	Vec2&					Position();
 	Vec2&					Velocity();
 	
-	void					Shoot(Bullet* bullet);
+	void					Shoot(Bullet* bullet, CPlayer::DIRECTION direction);
 	void					Explode();
 	bool					AdvanceExplosion();
 	void					Rotate(DIRECTION direction);
