@@ -16,24 +16,24 @@ void Bullet::AddBullet(Vec2 pos, int direction) {
 	m_lpBulletPosList.push_back(pos);
 
 	Vec2 vel;
-	switch (direction) {
-	case 0:
-		vel.x = 0;
-		vel.y = -1.5;
-		break;
-	case 1:
-		vel.x = 0;
-		vel.y = 1.5;
-		break;
-	case 2:
-		vel.x = -1.5;
-		vel.y = 0;
-		break;
-	case 3:
-		vel.x = 1.5;
-		vel.y = 0;
-		break;
-	}
+		switch (direction) {
+		case 0:
+			vel.x = 0;
+			vel.y = -1.5;
+			break;
+		case 1:
+			vel.x = 0;
+			vel.y = 1.5;
+			break;
+		case 2:
+			vel.x = -1.5;
+			vel.y = 0;
+			break;
+		case 3:
+			vel.x = 1.5;
+			vel.y = 0;
+			break;
+		}
 
 	m_lpBulletVelList.push_back(vel);
 }

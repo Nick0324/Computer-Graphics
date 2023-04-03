@@ -466,10 +466,11 @@ void CGameApp::AnimateObjects()
 void CGameApp::DrawObjects()
 {
 	static UINT			fTimer;
+	
 
 	m_pBBuffer->reset();
 
-	m_imgBackground.Paint(m_pBBuffer->getDC(), 0, 0);
+	DrawBackground();
 
 	m_pPlayer->Draw();
 	m_pPlayer1->Draw();
@@ -478,7 +479,7 @@ void CGameApp::DrawObjects()
 	m_pCrate->Draw();
 
 	m_pBBuffer->present();
-	if (m_pCrate->crateList.size() < 5) {
+	if (m_pCrate->crateList.size() < 2) {
 		m_pCrate->AddCrate(*(new Crate(m_pBBuffer)));
 	}
 
@@ -490,11 +491,22 @@ void CGameApp::DrawObjects()
 		m_pPlayer1->Explode();
 	}
 	for (int i = 0; i < m_pCrate->crateList.size(); i++) {
-		if (m_pCrate->crateList.at(i).m_pSprite->mPosition.y >= 600) {
+
+		m_pCrate->crateList.at(i).Shoot();
+
+		//Erase crate out of bounds
+		if (m_pCrate->crateList.at(i).m_pSprite->mPosition.y >= 400) {
 			m_pCrate->crateList.erase(m_pCrate->crateList.begin() + i);
 		}
+		//Erase crate bullet out of bound
+		if (m_pCrate->crateList.at(i).bulletSprite->mPosition.y >= 600) {
+			//delete m_pCrate->crateList.at(i).bulletSprite;
+			m_pCrate->crateList.at(i).canShoot = true;
+		}
+		else {
+			m_pCrate->crateList.at(i).canShoot = false;
+		}
 		if (CollideBullet(m_pCrate->crateList.at(i).m_pSprite)) {
-			fTimer = SetTimer(m_hWnd, 1, 70, NULL);
 			m_pCrate->crateList.erase(m_pCrate->crateList.begin() + i);
 			m_pPlayer->score += 100;
 		}
@@ -504,6 +516,12 @@ void CGameApp::DrawObjects()
 			m_pPlayer->Position() = Vec2(100, 400);
 			m_pPlayer->Velocity() = Vec2(0, 0);
 			m_pCrate->crateList.erase(m_pCrate->crateList.begin() + i);
+		}
+		else if (Collide(m_pCrate->crateList.at(i).bulletSprite, m_pPlayer->m_pSprite)) {
+			fTimer = SetTimer(m_hWnd, 1, 70, NULL);
+			m_pPlayer->Explode();
+			m_pPlayer->Position() = Vec2(100, 400);
+			m_pPlayer->Velocity() = Vec2(0, 0);
 		}
 	}
 }
@@ -568,4 +586,23 @@ bool CGameApp::CollideBullet(Sprite* p1) {
 		}
 	}
 	return false;
+}
+
+void CGameApp::DrawBackground()
+{
+	static int currentY = m_imgBackground.Height() - 40;
+
+	static size_t lastTime = ::GetTickCount();
+	size_t currentTime = ::GetTickCount();
+
+	if (currentTime - lastTime > 100)
+	{
+		lastTime = currentTime;
+		currentY -= 5;
+		if (currentY < 0)
+			currentY = m_imgBackground.Height() - 40;
+	}
+
+	m_imgBackground.Paint(m_pBBuffer->getDC(), 0, currentY);
+	
 }

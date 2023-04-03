@@ -66,6 +66,8 @@ private:
 	void		Load();
 	bool		Collide(Sprite* p1, Sprite* p2);
 	bool		CollideBullet(Sprite* p1);
+	void		DrawBackground();
+
 	//-------------------------------------------------------------------------
 	// Private Static Functions For This Class
 	//-------------------------------------------------------------------------
@@ -98,6 +100,7 @@ private:
 	CPlayer*				m_pPlayer1;
 	Bullet*					m_pBullet;
 	Crate*					m_pCrate;
+	UINT					backgroundY = 0;
 };
 
 #endif // _CGAMEAPP_H_
