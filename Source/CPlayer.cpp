@@ -70,7 +70,7 @@ void CPlayer::Update(float dt)
 		if(v > 35.0f)
 		{
 			m_eSpeedState = SPEED_START;
-			PlaySound("data/jet-start.wav", NULL, SND_FILENAME | SND_ASYNC);
+			//PlaySound("data/jet-start.wav", NULL, SND_FILENAME | SND_ASYNC);
 			m_fTimer = 0;
 		}
 		break;
@@ -78,13 +78,13 @@ void CPlayer::Update(float dt)
 		if(v < 25.0f)
 		{
 			m_eSpeedState = SPEED_STOP;
-			PlaySound("data/jet-stop.wav", NULL, SND_FILENAME | SND_ASYNC);
+			//PlaySound("data/jet-stop.wav", NULL, SND_FILENAME | SND_ASYNC);
 			m_fTimer = 0;
 		}
 		else
 			if(m_fTimer > 1.f)
 			{
-				PlaySound("data/jet-cabin.wav", NULL, SND_FILENAME | SND_ASYNC);
+				//PlaySound("data/jet-cabin.wav", NULL, SND_FILENAME | SND_ASYNC);
 				m_fTimer = 0;
 			}
 		break;
@@ -106,29 +106,33 @@ void CPlayer::Draw()
 
 void CPlayer::Move(ULONG ulDirection)
 {
-	if (ulDirection & CPlayer::DIR_LEFT)
+	if (ulDirection & CPlayer::DIR_LEFT) {
 		m_pSprite->mVelocity.x -= .1;
+	}
 	if (m_pSprite->mPosition.x - m_pSprite->width() / 2 < 0) {
 		m_pSprite->mVelocity.x = 0;
 		m_pSprite->mPosition.x += 1;
 	}
 	
-	if( ulDirection & CPlayer::DIR_RIGHT )
+	if (ulDirection & CPlayer::DIR_RIGHT) {
 		m_pSprite->mVelocity.x += .1;
+	}
 	if (m_pSprite->mPosition.x + m_pSprite->width() / 2 > 780) {
 		m_pSprite->mVelocity.x = 0;
 		m_pSprite->mPosition.x -= 1;
 	}
 	
-	if( ulDirection & CPlayer::DIR_FORWARD )
+	if (ulDirection & CPlayer::DIR_FORWARD) {
 		m_pSprite->mVelocity.y -= .1;
+	}
 	if (m_pSprite->mPosition.y - m_pSprite->height() / 2 < 0) {
 		m_pSprite->mVelocity.y = 0;
 		m_pSprite->mPosition.y += 1;
 	}
 	
-	if( ulDirection & CPlayer::DIR_BACKWARD )	
+	if (ulDirection & CPlayer::DIR_BACKWARD) {
 		m_pSprite->mVelocity.y += .1;
+	}
 	if (m_pSprite->mPosition.y + m_pSprite->height() / 2 > 560) {
 		m_pSprite->mVelocity.y = 0;
 		m_pSprite->mPosition.y -= 1;
@@ -158,7 +162,7 @@ void CPlayer::Explode()
 {
 	m_pExplosionSprite->mPosition = m_pSprite->mPosition;
 	m_pExplosionSprite->SetFrame(0);
-	PlaySound("data/explosion.wav", NULL, SND_FILENAME | SND_ASYNC);
+	//PlaySound("data/explosion.wav", NULL, SND_FILENAME | SND_ASYNC);
 	m_bExplosion = true;
 }
 
@@ -178,4 +182,31 @@ bool CPlayer::AdvanceExplosion()
 	}
 
 	return true;
+}
+
+void CPlayer::Rotate(DIRECTION direction) {
+	auto position = m_pSprite->mPosition;
+	auto velocity = m_pSprite->mVelocity;
+	auto backbuffer = m_pSprite->getBackBuffer();
+
+	delete m_pSprite;
+
+	switch (direction)
+	{
+	case DIRECTION::DIR_FORWARD:
+		m_pSprite = new Sprite("data/planeimgandmask.bmp", RGB(0xff, 0x00, 0xff));
+		break;
+	case DIRECTION::DIR_BACKWARD:
+		m_pSprite = new Sprite("data/planeimgandmaskdown.bmp", RGB(0xff, 0x00, 0xff));
+		break;
+	case DIRECTION::DIR_LEFT:
+		m_pSprite = new Sprite("data/planeimgandmaskleft.bmp", RGB(0xff, 0x00, 0xff));
+		break;
+	case DIRECTION::DIR_RIGHT:
+		m_pSprite = new Sprite("data/planeimgandmaskright.bmp", RGB(0xff, 0x00, 0xff));
+		break;
+	}
+	m_pSprite->mPosition = position;
+	m_pSprite->mVelocity = velocity;
+	m_pSprite->setBackBuffer(backbuffer);
 }

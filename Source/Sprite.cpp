@@ -74,6 +74,10 @@ void Sprite::setBackBuffer(const BackBuffer *pBackBuffer)
 		mhSpriteDC = CreateCompatibleDC(mpBackBuffer->getDC());
 	}
 }
+const BackBuffer* Sprite::getBackBuffer()
+{
+	return mpBackBuffer;
+}
 
 void Sprite::draw()
 {

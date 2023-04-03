@@ -263,15 +263,37 @@ LRESULT CGameApp::DisplayWndProc( HWND hWnd, UINT Message, WPARAM wParam, LPARAM
 				fTimer = SetTimer(m_hWnd, 3, 100, NULL);
 				m_pPlayer->Shoot(m_pBullet);
 				break;
+			case VK_F5:
+				Save();
+				break;
+			case VK_F6:
+				Load();
+				break;
+			case VK_LEFT:
+				m_pPlayer->Rotate(CPlayer::DIR_LEFT);
+				break;
+			case VK_RIGHT:
+				m_pPlayer->Rotate(CPlayer::DIR_RIGHT);
+				break;
+			case VK_UP:
+				m_pPlayer->Rotate(CPlayer::DIR_FORWARD);
+				break;
+			case VK_DOWN:
+				m_pPlayer->Rotate(CPlayer::DIR_BACKWARD);
+				break;
 			}
+
 			break;
 
 		case WM_TIMER:
 			switch(wParam)
 			{
 			case 1:
-				if(!m_pPlayer1->AdvanceExplosion())
+				if(!m_pPlayer->AdvanceExplosion())
 					KillTimer(m_hWnd, 1);
+			case 2:
+				if (!m_pPlayer1->AdvanceExplosion())
+					KillTimer(m_hWnd, 2);
 			}
 			break;
 
@@ -428,13 +450,14 @@ void CGameApp::AnimateObjects()
 	m_pPlayer->Update(m_Timer.GetTimeElapsed());
 	m_pBullet->Update(m_Timer.GetTimeElapsed());
 }
-
 //-----------------------------------------------------------------------------
 // Name : DrawObjects () (Private)
 // Desc : Draws the game objects
 //-----------------------------------------------------------------------------
 void CGameApp::DrawObjects()
 {
+	static UINT			fTimer;
+
 	m_pBBuffer->reset();
 
 	m_imgBackground.Paint(m_pBBuffer->getDC(), 0, 0);
@@ -445,4 +468,50 @@ void CGameApp::DrawObjects()
 	m_pBullet->Draw();
 
 	m_pBBuffer->present();
+
+	if (Collide(m_pPlayer1->m_pSprite, m_pPlayer->m_pSprite)) {
+		fTimer = SetTimer(m_hWnd, 1, 70, NULL);
+		m_pPlayer->Explode();
+		m_pPlayer1->Explode();
+	}
+}
+
+void CGameApp::Save() {
+	std::ofstream fout;
+	fout.open("save-data.txt");
+	fout << m_pPlayer->Position().x << std::endl << m_pPlayer->Position().y;
+	fout.close();
+}
+
+void CGameApp::Load() {
+	std::ifstream fin;
+	fin.open("save-data.txt");
+	fin >> m_pPlayer->Position().x >> m_pPlayer->Position().y;
+	m_pPlayer->Velocity().x = 0;
+	m_pPlayer->Velocity().y = 0;
+	fin.close();
+}
+
+bool CGameApp::Collide(Sprite* p1, Sprite* p2) {
+	RECT r;
+	r.left = p1->mPosition.x - p1->width() / 2;
+	r.right = p1->mPosition.x + p1->width() / 2;
+	r.top = p1->mPosition.y - p1->height() / 2;
+	r.bottom = p1->mPosition.y + p1->height() / 2;
+
+	RECT r2;
+	r2.left = p2->mPosition.x - p2->width() / 2;
+	r2.right = p2->mPosition.x + p2->width() / 2;
+	r2.top = p2->mPosition.y - p2->height() / 2;
+	r2.bottom = p2->mPosition.y + p2->height() / 2;
+
+
+	if (r.right > r2.left && r.left < r2.right && r.bottom>r2.top && r.top < r2.bottom) {
+		return true;
+	}
+	if (r.left > r2.right && r.right < r2.left && r.bottom>r2.top && r.top < r2.bottom) {
+		return true;
+	}
+
+	return false;
 }

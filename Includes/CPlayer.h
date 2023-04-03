@@ -49,6 +49,8 @@ public:
 			 CPlayer(const BackBuffer *pBackBuffer);
 	virtual ~CPlayer();
 
+
+	Sprite* m_pSprite;
 	//-------------------------------------------------------------------------
 	// Public Functions for This Class.
 	//-------------------------------------------------------------------------
@@ -61,12 +63,14 @@ public:
 	void					Shoot(Bullet* bullet);
 	void					Explode();
 	bool					AdvanceExplosion();
+	void					Rotate(DIRECTION direction);
+	
 
 private:
 	//-------------------------------------------------------------------------
 	// Private Variables for This Class.
 	//-------------------------------------------------------------------------
-	Sprite*					m_pSprite;
+	
 	ESpeedStates			m_eSpeedState;
 	float					m_fTimer;
 	

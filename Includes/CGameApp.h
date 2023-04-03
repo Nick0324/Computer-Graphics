@@ -18,6 +18,8 @@
 #include "BackBuffer.h"
 #include "ImageFile.h"
 #include "Bullet.h"
+#include <fstream>
+#include <iostream>
 //-----------------------------------------------------------------------------
 // Forward Declarations
 //-----------------------------------------------------------------------------
@@ -60,7 +62,9 @@ private:
 	void		AnimateObjects	( );
 	void		DrawObjects	   ( );
 	void		ProcessInput	  ( );
-	
+	void		Save();
+	void		Load();
+	bool		Collide(Sprite* p1, Sprite* p2);
 	//-------------------------------------------------------------------------
 	// Private Static Functions For This Class
 	//-------------------------------------------------------------------------

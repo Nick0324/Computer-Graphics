@@ -22,6 +22,7 @@ public:
 	void update(float dt);
 
 	void setBackBuffer(const BackBuffer *pBackBuffer);
+	const BackBuffer* getBackBuffer();
 	virtual void draw();
 
 public:
